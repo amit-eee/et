@@ -31,4 +31,4 @@ void Prune_attention_kernelLauncher(half *out, half *Q, half *K, half *V,
 
 void sharedQK_attention_kernelLauncher(half *out, half *QK, half *V, half *mask,
                                        int seq_len, int d_model, int nhead,
-                                       cudaStream_t stream = nullptr)
+                                       cudaStream_t stream = nullptr);
