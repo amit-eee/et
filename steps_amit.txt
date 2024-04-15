@@ -65,3 +65,8 @@ cmake --version
 # put a semicolon in kernel/kernel.h last line
 # set(CMAKE_CUDA_ARCHITECTURES 75) in the cmakesfiles.txt
 # run the commands to build and make -j
+
+ncu --set full ./encoder_prune_test 128 8 512 0.1
+nsys profile --stats=true ./encoder_prune_test 128 8 512 0.1
+nvprof ./encoder_prune_test 128 8 512 0.1
+
