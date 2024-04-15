@@ -1,0 +1,67 @@
+# Step 1: Create a local directory for installation
+mkdir -p ~/local
+cd ~/local
+
+# Step 2: Download and install MPFR
+wget https://www.mpfr.org/mpfr-current/mpfr-4.2.1.tar.gz
+tar -xvf mpfr-4.2.1.tar.gz
+cd mpfr-4.2.1
+./configure --prefix=$HOME/local --with-gmp=$HOME/local
+make -j$(nproc)
+make install
+cd ..
+
+# Step 3: Download and install MPC
+wget https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
+tar -xvf mpc-1.2.1.tar.gz
+cd mpc-1.2.1
+./configure --prefix=$HOME/local --with-gmp=$HOME/local --with-mpfr=$HOME/local
+make -j$(nproc)
+make install
+cd ..
+
+# Step 4: Download and install ISL
+wget https://libisl.sourceforge.io/isl-0.24.tar.xz
+tar -xf isl-0.24.tar.xz
+cd isl-0.24
+./configure --prefix=$HOME/local --with-gmp-prefix=$HOME/local
+make -j$(nproc)
+make install
+cd ..
+
+# Step 5: Download and install GCC 11.2
+wget https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.gz
+tar -xvf gcc-11.2.0.tar.gz
+cd gcc-11.2.0
+./contrib/download_prerequisites
+mkdir build && cd build
+../configure --prefix=$HOME/local --with-gmp=$HOME/local --with-mpfr=$HOME/local --with-mpc=$HOME/local --with-isl=$HOME/local --disable-multilib --enable-languages=c,c++
+make -j$(nproc)
+make install
+cd ..
+
+# Step 6: Update environment variables to use the newly built GCC
+echo 'export PATH="$HOME/local/bin:$PATH"' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH="$HOME/local/lib64:$LD_LIBRARY_PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify installation
+gcc --version
+g++ --version
+
+# Step 7: Download and compile CMake
+wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1.tar.gz
+tar -xzvf cmake-3.22.1.tar.gz
+cd cmake-3.22.1
+./bootstrap --prefix=$HOME/local
+make -j$(nproc)
+make install
+cd ..
+
+# Verify CMake installation
+cmake --version
+
+# download ET code from github
+# put a semicolon in kernel/kernel.h last line
+# set(CMAKE_CUDA_ARCHITECTURES 75) in the cmakesfiles.txt
+# run the commands to build and make -j
